@@ -133,6 +133,7 @@ public:
     ROS_INFO("Entering in the tool orthogonal line");
   }
 
+  virtual 
   void onExit()
   { 
     ROS_INFO("Finishing the tool orthogonal line"); 
