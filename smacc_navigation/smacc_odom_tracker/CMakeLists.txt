@@ -33,7 +33,6 @@ generate_messages(
    actionlib_msgs
  )
  
-
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################

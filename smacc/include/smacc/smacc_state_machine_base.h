@@ -387,10 +387,9 @@ public:
     {
         auto a =  info_->getState<StateType>();
 
-        ROS_ERROR(".");
         if(a!=nullptr)
         {
-                ROS_WARN_STREAM("current state: " << a->demangledStateName);
+                ROS_WARN_STREAM("setting state active "<< active <<": " << a->getFullPath());
                 a->active_ = active;
         }
         else
@@ -398,7 +397,7 @@ public:
             ROS_ERROR_STREAM("updated state not found: " <<typeid(StateType).name());
         }  
 
-        ROS_ERROR("-");
+        
         /*  
         if(a !=nullptr && a->parentState_==nullptr)
         {
@@ -429,7 +428,7 @@ public:
     
     virtual ~SmaccStateMachineBase( )
     {
-        updateCurrentState<InitialStateType>(false);
+        //updateCurrentState<InitialStateType>(false);
     }
 
     // This function is defined in the Player.cpp
@@ -545,12 +544,11 @@ public:
                     || !state->active_ )
                         continue;     
 
-                ROS_WARN_STREAM("active root state: " << state->toShortName());
+                //ROS_WARN_STREAM("active root state: " << state->toShortName());
                 status_msg.active_states.push_back(state->toShortName());
-
             }
 
-              status_msg.info = "HEART BEAT";
+            status_msg.info = "HEART BEAT";
     
             status_msg.local_data.resize(6);
             status_msg.local_data[0] = 0x80;
@@ -584,7 +582,7 @@ public:
             {
                 if(child->active_)
                 {
-                    ROS_WARN_STREAM("active child state ("<< parentstate->toShortName()<<"): " << child->toShortName());
+                    //ROS_WARN_STREAM("active child state ("<< parentstate->toShortName()<<"): " << child->toShortName());
                     status_msg.active_states.push_back(child->toShortName());
                 }
             }

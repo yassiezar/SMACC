@@ -98,7 +98,7 @@ class SmaccState : public sc::simple_state<
       this->updateCurrentState<MostDerived>(true);
 
       this->setParam("created", true);
-      dynamic_cast<MostDerived*>(this)->onEntry();
+      static_cast<MostDerived*>(this)->onEntry();
     }
 
     template <typename StateType>
@@ -109,10 +109,10 @@ class SmaccState : public sc::simple_state<
 
     InnerInitial* smacc_inner_type;
  
-    virtual ~SmaccState() 
+    ~SmaccState() 
     {
-      this->updateCurrentState<MostDerived>(false);
-      dynamic_cast<MostDerived*>(this)->onExit();
+      //this->updateCurrentState<MostDerived>(false);
+      static_cast<MostDerived*>(this)->onExit();
     }
 
   public:
