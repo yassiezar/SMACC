@@ -9,17 +9,18 @@
 
 //--------------------------------------------
 /// NavigateToEndPoint State
-struct NavigateToEndPoint: SmaccState<NavigateToEndPoint, RadialMotionStateMachine>
+template<typename Container>
+struct NavigateToEndPoint: SmaccState<NavigateToEndPoint<Container>, Superstate<Container>>
 {
   // when this state is finished move to the ReturnToRadialStart state
-  typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, ReturnToRadialStart> reactions; 
+  typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, ReturnToRadialStart<Container>> reactions; 
 
 public:
-  using SmaccState::SmaccState;
+  using SmaccState<NavigateToEndPoint<Container>, Superstate<Container>>::SmaccState;
 
   void onInitialize()
   {
-    this->configure<NavigationOrthogonal>(new NavigateForward(3));
+    //this->configure<NavigationOrthogonal>(new NavigateForward(3));
     
     // OPTIONAL SYNTAX
     // auto fw = new NavigateForward();
@@ -28,7 +29,7 @@ public:
     // this->configure<NavigationOrthogonal>(fw);
     
 
-    this->configure<ToolOrthogonal>(new ToolStart());
+    //this->configure<ToolOrthogonal>(new ToolStart());
   }
 
   void onEntry()

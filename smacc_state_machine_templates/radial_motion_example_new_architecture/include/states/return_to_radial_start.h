@@ -9,18 +9,19 @@
 
 //--------------------------------------------
 /// ReturnToRadialStart State
-struct ReturnToRadialStart : SmaccState< ReturnToRadialStart, RadialMotionStateMachine > // <- these are the orthogonal lines of this State
+template <typename Container>
+struct ReturnToRadialStart : SmaccState< ReturnToRadialStart<Container>, Superstate<Container> > // <- these are the orthogonal lines of this State
 {
     // when this state is finished then move to the RotateDegress state
-    typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, RotateDegress> reactions; 
+    typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, RotateDegress<Container>> reactions; 
 
 public:
-  using SmaccState::SmaccState;
+  using SmaccState< ReturnToRadialStart<Container>, Superstate<Container> >::SmaccState;
 
    void onInitialize()
    {
-      this->configure<NavigationOrthogonal>(new UndoPathBackwards());
-      this->configure<ToolOrthogonal>(new ToolStop());
+      //this->configure<NavigationOrthogonal>(new UndoPathBackwards());
+      //this->configure<ToolOrthogonal>(new ToolStop());
    }
 
     void onEntry()

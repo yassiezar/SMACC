@@ -11,19 +11,20 @@
 using namespace smacc;
 
 /// State NavigateToRadialStart
-struct NavigateToRadialStart: smacc::SmaccState<NavigateToRadialStart, RadialMotionStateMachine> // <- these are the orthogonal lines of this State
+template<typename Container>
+struct NavigateToRadialStart: smacc::SmaccState<NavigateToRadialStart<Container>, Superstate<Container>> // <- these are the orthogonal lines of this State
 {
   // when this state is finished then move to the RotateDegress state
-  typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, RotateDegress> reactions; 
+  typedef sc::transition<EvActionSucceded<smacc::SmaccMoveBaseActionClient::Result>, RotateDegress<Container>> reactions; 
 
 public:
-  using SmaccState::SmaccState;
+  using SmaccState<NavigateToRadialStart<Container>, Superstate<Container>>::SmaccState;
 
   void onInitialize()
   {
      ROS_INFO("ON INITIALIZEEEE");
-     this->configure<NavigationOrthogonal>(new NavigateGlobalPosition(1, 0));
-     this->configure<ToolOrthogonal>(new ToolStart());
+     //this->configure<NavigationOrthogonal>(new NavigateGlobalPosition(1, 0));
+     //this->configure<ToolOrthogonal>(new ToolStart());
   }
 
   void onEntry()
