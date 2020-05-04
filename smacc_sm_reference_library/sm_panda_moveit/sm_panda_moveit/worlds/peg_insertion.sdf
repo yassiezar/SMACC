@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+      <pose>-10 10 0 0 0 0</pose>
+
+    </include>
+    <!-- <include>
+      <uri>model://cafe_table</uri>
+      <name>table1</name>
+      <pose>1.0 0 -0.08 0 0 0</pose>
+    </include>  -->
+    <include>
+      <uri>model://peg_holder</uri>
+      <name>horizontal_peg_holder</name>
+      <pose>0 0.5 0.7 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://peg_holder</uri>
+      <name>wall_peg_holder</name>
+      <pose>0 0.7 1.2 1.57079632679 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workbench</uri>
+      <name>workbench</name>
+      <pose>0 0.5 0 0 0 1.57079632679</pose>
+    </include>
+
+    <include>
+      <uri>model://custom_peg</uri>
+      <name>peg_1</name>
+      <name>workbench</name>
+      <pose>0.0375 0.5 0.73 0 0 0</pose>
+    </include>
+  </world>
+</sdf>

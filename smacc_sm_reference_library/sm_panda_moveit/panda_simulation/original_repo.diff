@@ -1,0 +1,24 @@
+diff --git a/config/panda_control.yaml b/config/panda_control.yaml
+index 053fbdc..9fb3127 100644
+--- a/config/panda_control.yaml
++++ b/config/panda_control.yaml
+@@ -20,12 +20,17 @@
+         state_publish_rate: 100
+ 
+     panda_hand_controller:
+-        type: position_controllers/JointTrajectoryController
++        #type: position_controllers/JointTrajectoryController
++        type: effort_controllers/JointTrajectoryController
+         joints:
+             - panda_finger_joint1
+             - panda_finger_joint2
+ 
+-        state_publish_rate: 25
++        gains:
++            panda_finger_joint1: { p: 300, d: 1.0, i: 40.0, i_clamp: 1 }
++            panda_finger_joint2: { p: 300, d: 1.0, i: 40.0, i_clamp: 1 }
++
++            state_publish_rate: 25
+     joint_position_controller:
+         type: panda_simulation/JointPositionController
+         arm_id: panda

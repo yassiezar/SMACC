@@ -1,0 +1,70 @@
+diff --git a/config/panda_arm.xacro b/config/panda_arm.xacro
+index 53ddcdf..f34eb70 100644
+--- a/config/panda_arm.xacro
++++ b/config/panda_arm.xacro
+@@ -21,7 +21,8 @@
+     </group_state>
+     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+-    <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="panda_link0" />
++    <!-- <virtual_joint name="virtual_joint" type="fixed" parent_frame="panda_pose" child_link="panda_link0" /> -->
++
+     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+     <disable_collisions link1="panda_link0" link2="panda_link1" reason="Adjacent" />
+     <disable_collisions link1="panda_link0" link2="panda_link2" reason="Never" />
+@@ -43,4 +44,4 @@
+     <disable_collisions link1="panda_link5" link2="panda_link6" reason="Adjacent" />
+     <disable_collisions link1="panda_link6" link2="panda_link7" reason="Adjacent" />
+   </xacro:macro>
+-</robot>
++</robot>
+\ No newline at end of file
+diff --git a/config/panda_arm_hand.srdf.xacro b/config/panda_arm_hand.srdf.xacro
+index 39de54f..bfec1f4 100644
+--- a/config/panda_arm_hand.srdf.xacro
++++ b/config/panda_arm_hand.srdf.xacro
+@@ -27,19 +27,25 @@
+     <joint name="panda_joint6" value="1.571" />
+     <joint name="panda_joint7" value="0.785" />
+   </group_state>
++  
+   <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+   <end_effector name="hand" parent_link="panda_link8" group="hand" parent_group="panda_arm_hand" />
+   <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+   <disable_collisions link1="panda_hand" link2="panda_link3" reason="Never" />
+   <disable_collisions link1="panda_hand" link2="panda_link4" reason="Never" />
++  <disable_collisions link1="panda_hand" link2="panda_link5" reason="Never" />
+   <disable_collisions link1="panda_hand" link2="panda_link6" reason="Never" />
+   <disable_collisions link1="panda_hand" link2="panda_link7" reason="Adjacent" />
+   <disable_collisions link1="panda_leftfinger" link2="panda_link3" reason="Never" />
+   <disable_collisions link1="panda_leftfinger" link2="panda_link4" reason="Never" />
++  <disable_collisions link1="panda_leftfinger" link2="panda_link5" reason="Never" />
+   <disable_collisions link1="panda_leftfinger" link2="panda_link6" reason="Never" />
+   <disable_collisions link1="panda_leftfinger" link2="panda_link7" reason="Never" />
+   <disable_collisions link1="panda_link3" link2="panda_rightfinger" reason="Never" />
+   <disable_collisions link1="panda_link4" link2="panda_rightfinger" reason="Never" />
++  <disable_collisions link1="panda_link5" link2="panda_rightfinger" reason="Never" />
+   <disable_collisions link1="panda_link6" link2="panda_rightfinger" reason="Never" />
+   <disable_collisions link1="panda_link7" link2="panda_rightfinger" reason="Never" />
++  <disable_collisions link1="panda_link7" link2="panda_link5" reason="Never" />
++
+ </robot>
+diff --git a/launch/trajectory_execution.launch.xml b/launch/trajectory_execution.launch.xml
+index b6c03c9..8bf3d74 100644
+--- a/launch/trajectory_execution.launch.xml
++++ b/launch/trajectory_execution.launch.xml
+@@ -7,11 +7,11 @@
+   <param name="moveit_manage_controllers" value="$(arg moveit_manage_controllers)"/>
+ 
+   <!-- When determining the expected duration of a trajectory, this multiplicative factor is applied to get the allowed duration of execution -->
+-  <param name="trajectory_execution/allowed_execution_duration_scaling" value="1.2"/> <!-- default 1.2 -->
++  <param name="trajectory_execution/allowed_execution_duration_scaling" value="2.2"/> <!-- default 1.2 -->
+   <!-- Allow more than the expected execution time before triggering a trajectory cancel (applied after scaling) -->
+-  <param name="trajectory_execution/allowed_goal_duration_margin" value="0.5"/> <!-- default 0.5 -->
++  <param name="trajectory_execution/allowed_goal_duration_margin" value="1.0"/> <!-- default 0.5 -->
+   <!-- Allowed joint-value tolerance for validation that trajectory's first point matches current robot state -->
+-  <param name="trajectory_execution/allowed_start_tolerance" value="0.01"/> <!-- default 0.01 -->
++  <param name="trajectory_execution/allowed_start_tolerance" value="0.02"/> <!-- default 0.01 -->
+   
+   <!-- Load the robot specific controller manager; this sets the moveit_controller_manager ROS parameter -->
+   <arg name="moveit_controller_manager" default="panda" />
