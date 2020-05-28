@@ -7,7 +7,7 @@ project(sm_dance_bot_strikes_back)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED smacc roscpp move_base_z_client_plugin multirole_sensor_client tf all_events_go event_countdown ros_timer_client conditional ros_publisher_client actionlib actionlib_msgs angles)
+find_package(catkin REQUIRED smacc roscpp move_base_z_client_plugin multirole_sensor_client tf sr_all_events_go sr_event_countdown ros_timer_client sr_conditional ros_publisher_client actionlib actionlib_msgs angles)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -57,6 +57,9 @@ find_package(catkin REQUIRED smacc roscpp move_base_z_client_plugin multirole_se
 # )
 
 add_action_files(
+   DIRECTORY
+   servers/led_action_server/action/
+   
    FILES
    LEDControl.action
 )
@@ -129,14 +132,14 @@ target_link_libraries(${PROJECT_NAME}
  add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
 
 
- add_executable(temperature_sensor_node_smdbsb test/temperature_sensor_node/src/temperature_sensor_node.cpp)
+ add_executable(temperature_sensor_node_smdbsb servers/temperature_sensor_node/src/temperature_sensor_node.cpp)
  set_target_properties(temperature_sensor_node_smdbsb PROPERTIES OUTPUT_NAME "temperature_sensor_node")
 
  target_link_libraries(temperature_sensor_node_smdbsb
    ${catkin_LIBRARIES}
  )
 
-add_executable(led_action_server_node_smdbsb test/led_action_server/src/led_action_server_node.cpp)
+add_executable(led_action_server_node_smdbsb servers/led_action_server/src/led_action_server_node.cpp)
 set_target_properties(led_action_server_node_smdbsb PROPERTIES OUTPUT_NAME "led_action_server_node")
 
  target_link_libraries(
@@ -156,7 +159,7 @@ add_dependencies(led_action_server_node_smdbsb ${${PROJECT_NAME}_EXPORTED_TARGET
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
-   test/service_node_3/src/service_node_3.py
+   servers/service_node_3/src/service_node_3.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -171,11 +174,11 @@ install(TARGETS
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
- install(TARGETS ${PROJECT_NAME}
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
- )
+# install(TARGETS ${PROJECT_NAME}
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+# )
 
 ## Mark cpp header files for installation
  install(DIRECTORY include/${PROJECT_NAME}/
@@ -183,36 +186,22 @@ install(TARGETS
    FILES_MATCHING PATTERN "*.h"
    PATTERN ".svn" EXCLUDE
  )
-
-install(FILES
-    launch/sm_dance_bot_strikes_back.launch
-    launch/ridgeback_simulation.launch
+ 
+install(DIRECTORY
+    launch/
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
 
-install(FILES
-    config/move_base_client/backward_local_planner.yaml
-    config/move_base_client/forward_local_planner.yaml
-    config/move_base_client/waypoints_plan.yaml
-    config/move_base_client/costmap_common_params.yaml
-    config/move_base_client/base_local_planner_params.yaml
-    config/move_base_client/global_costmap_params.yaml
-    config/move_base_client/local_costmap_params.yaml
-
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config/move_base_client
-)
-
-install(FILES
-#    config/navigation.rviz
-    config/radial_motion_sm_config.yaml
-    config/rosconsole.config
+install(DIRECTORY
+    config/
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
 
-install(FILES
-    urdf/empty.xacro
+install(DIRECTORY
+    urdf/
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/urdf
 )
+
 
 
 #############
