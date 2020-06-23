@@ -7,7 +7,7 @@ project(smacc_runtime_test)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED roscpp rosgraph_msgs smacc_msgs)
+find_package(catkin REQUIRED roscpp rosgraph_msgs smacc_msgs rostest)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -102,7 +102,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES smacc_runtime_test_node
 #  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+#  DEPENDS gtest
 )
 
 ###########

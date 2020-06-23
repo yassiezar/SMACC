@@ -52,6 +52,8 @@
   <depend>roscpp</depend>
   <depend>rosgraph_msgs</depend>
   <depend>smacc_msgs</depend>
+  <depend>rostest</depend>
+  <depend>libgtest-dev</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
