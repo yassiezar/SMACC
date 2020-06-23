@@ -4,4 +4,4 @@ success_switch:
      state_name: "sm_atomic::State2"
 failure_switch:
    - type: timeout
-     duration: 10.0 # sec
+     duration: 25.0 # sec

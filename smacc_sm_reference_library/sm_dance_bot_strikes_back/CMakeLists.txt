@@ -209,10 +209,10 @@ install(DIRECTORY
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_dance_bot.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+  # find_package(rostest REQUIRED)
+  # add_rostest(test/sm_dance_bot_strikes_back.test)
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

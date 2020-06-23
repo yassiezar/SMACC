@@ -1,0 +1,7 @@
+state_machine_rosparam_ws: /SmCalendarWeek
+success_switch:
+   - type: state_reached
+     state_name: "sm_calendar_week::StSunday"
+failure_switch:
+   - type: timeout
+     duration: 50.0 # sec
