@@ -210,8 +210,8 @@ install(DIRECTORY
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-  # find_package(rostest REQUIRED)
-  # add_rostest(test/sm_dance_bot_strikes_back.test)
+  #find_package(rostest REQUIRED)
+  #add_rostest(test/sm_dance_bot_strikes_back.test)
 endif()
 
 ## Add folders to be run by python nosetests

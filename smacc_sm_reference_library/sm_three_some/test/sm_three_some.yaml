@@ -1,0 +1,7 @@
+state_machine_rosparam_ws: /SmThreeSome
+success_switch:
+   - type: state_reached
+     state_name: "sm_three_some::StState4"
+failure_switch:
+   - type: timeout
+     duration: 120.0 # sec

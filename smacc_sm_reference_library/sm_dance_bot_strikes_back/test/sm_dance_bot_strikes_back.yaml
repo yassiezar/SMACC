@@ -1,7 +1,7 @@
 state_machine_rosparam_ws: /SmDanceBotStrikesBack
 success_switch:
    - type: state_reached
-     state_name: "sm_dance_bot::SS1::sm_dance_bot::radial_motion_states::StiRadialReturn"
+     state_name: "sm_dance_bot_strikes_back::SS1::sm_dance_bot_strikes_back::radial_motion_states::StiRadialReturn"
 failure_switch:
    - type: timeout
      duration: 120.0 # sec
