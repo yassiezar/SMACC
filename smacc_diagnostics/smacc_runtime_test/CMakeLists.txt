@@ -102,7 +102,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES smacc_runtime_test_node
 #  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS gtest
+   DEPENDS gtest
 )
 
 ###########
