@@ -10,7 +10,6 @@ project(smacc_runtime_test)
 find_package(catkin REQUIRED roscpp rosgraph_msgs smacc_msgs rostest)
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -102,7 +101,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES smacc_runtime_test_node
 #  CATKIN_DEPENDS other_catkin_pkg
-   DEPENDS gtest
+#   DEPENDS gtest gtest_main
 )
 
 ###########
@@ -145,6 +144,7 @@ add_executable(${PROJECT_NAME}_node src/smacc_runtime_test_node.cpp)
 target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
    gtest
+   gtest_main
 )
 
 #############

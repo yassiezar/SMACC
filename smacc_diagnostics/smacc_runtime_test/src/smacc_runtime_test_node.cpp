@@ -4,6 +4,7 @@
 #include <boost/signals2.hpp>
 #include <memory>
 #include <vector>
+#include <gtest/gtest.h>
 
 class SmaccTestRuntimeNode;
 class TimeoutFailureTestPolicy;
