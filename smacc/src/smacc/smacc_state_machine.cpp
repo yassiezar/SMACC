@@ -169,52 +169,6 @@ std::string ISmaccStateMachine::getStateMachineName()
 
 void ISmaccStateMachine::checkStateMachineConsistence()
 {
-    // transition from an orthogonal that doesn’t exist.
-    // transition from a source that doesn’t exist.
-
-    // std::stringstream errorbuffer;
-    // bool errorFound = false;
-
-    // for (auto &stentry : this->stateMachineInfo_->states)
-    // {
-    //     auto stinfo = stentry.second;
-
-    //     for (auto &transition : stinfo->transitions_)
-    //     {
-    //         auto evinfo = transition.eventInfo;
-    //         bool found = false;
-    //         for (auto &orthogonal : orthogonals_)
-    //         {
-    //             if (orthogonal.first == evinfo->getObjectTagName())
-    //             {
-    //                 found = true;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (!found)
-    //         {
-    //             errorbuffer << "---------" << std::endl
-    //                         << "[Consistency Checking] Transition event refers not existing orthogonal." << std::endl
-    //                         << "State: " << demangleType(*stinfo->tid_) << std::endl
-    //                         << "Transition: " << transition.transitionTypeInfo->getFullName() << std::endl
-    //                         << "Orthogonal: " << evinfo->getObjectTagName() << std::endl
-    //                         << "---------" << std::endl;
-
-    //             errorFound = true;
-    //         }
-    //         //std::string getEventSourceName();
-    //         //std::string getObjectTagName();
-    //     }
-    // }
-
-    // if (errorFound)
-    // {
-    //     ROS_WARN_STREAM("== STATE MACHINE CONSISTENCY CHECK: ==" << std::endl
-    //                                                              << errorbuffer.str() << std::endl
-    //                                                              << "=================");
-    // }
-    // cb from a client that doesn’t exist – don’t worry about making clients dynamically.
 }
 
 } // namespace smacc
