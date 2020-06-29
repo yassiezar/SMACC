@@ -53,9 +53,8 @@
   <depend>rosgraph_msgs</depend>
   <depend>smacc_msgs</depend>
   <depend>rostest</depend>
-  <depend>gtest</depend>
-
-
+  <test_depend>gtest</test_depend>
+  
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

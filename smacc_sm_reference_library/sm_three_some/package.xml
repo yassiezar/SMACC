@@ -59,6 +59,9 @@
   <depend>keyboard_client</depend>
   <depend>xterm</depend>
 
+  <test_depend>rostest</test_depend>
+  <test_depend>gtest</test_depend>
+
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
