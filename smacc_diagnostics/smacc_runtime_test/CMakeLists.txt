@@ -8,7 +8,7 @@ project(smacc_runtime_test)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED roscpp rosgraph_msgs smacc_msgs rostest)
-find_package(gtest)
+#find_package(gtest)
 
 ## System dependencies are found with CMake's conventions
 
@@ -102,7 +102,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES smacc_runtime_test_node
 #  CATKIN_DEPENDS other_catkin_pkg
-   DEPENDS gtest gtest_main
+#   DEPENDS gtest gtest_main
 )
 
 ###########
@@ -114,7 +114,7 @@ catkin_package(
 include_directories(
  include
  ${catkin_INCLUDE_DIRS}
- ${gtest_INCLUDE_DIRS}
+ #${gtest_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -145,7 +145,7 @@ add_executable(${PROJECT_NAME}_node src/smacc_runtime_test_node.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
-   ${gtest_LIBRARIES}
+   #${gtest_LIBRARIES}
    gtest_main
 )
 
@@ -168,6 +168,11 @@ target_link_libraries(${PROJECT_NAME}_node
 install(TARGETS ${PROJECT_NAME}_node
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+install(FILES 
+        ${CMAKE_CURRENT_BINARY_DIR}/gtest/googlemock/gtest/libgtest.so
+        ${CMAKE_CURRENT_BINARY_DIR}/gtest/googlemock/gtest/libgtest_main.so
+        DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
