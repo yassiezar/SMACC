@@ -96,17 +96,19 @@ void ISmaccStateMachine::requiresComponent(SmaccComponentType *&storage)
   ROS_DEBUG("component %s is required", demangleSymbol(typeid(SmaccComponentType).name()).c_str());
   std::lock_guard<std::recursive_mutex> lock(m_mutex_);
 
-  for (auto *ortho : this->orthogonals_)
+  for (auto ortho : this->orthogonals_)
   {
-    for (ISmaccClient *client : ortho->getClients())
+    for (auto& client : ortho.second->clients_)
     {
+
       storage = client->getComponent<SmaccComponentType>();
-      if (storage == nullptr)
+      if (storage != nullptr)
       {
         return;
       }
     }
   }
+  ROS_WARN("component %s is required but it was not found in any orthogonal", demangleSymbol(typeid(SmaccComponentType).name()).c_str());
 
   // std::string componentkey = demangledTypeName<SmaccComponentType>();
   // SmaccComponentType *ret;
@@ -224,7 +226,7 @@ void ISmaccStateMachine::mapBehavior()
     // of this component
     BehaviorType *behavior;
     this->requiresComponent(behavior);
-    globalreference = dynamic_cast<SmaccClientBehavior *>(behavior);
+    globalreference = dynamic_cast<ISmaccClientBehavior *>(behavior);
 
     this->setGlobalSMData(stateFieldName, globalreference);
   }
@@ -289,7 +291,7 @@ boost::signals2::connection ISmaccStateMachine::createSignalConnection(TSmaccSig
 {
   static_assert(std::is_base_of<ISmaccState, TSmaccObjectType>::value ||
                     std::is_base_of<ISmaccClient, TSmaccObjectType>::value ||
-                    std::is_base_of<SmaccClientBehavior, TSmaccObjectType>::value ||
+                    std::is_base_of<ISmaccClientBehavior, TSmaccObjectType>::value ||
                     std::is_base_of<StateReactor, TSmaccObjectType>::value ||
                     std::is_base_of<ISmaccComponent, TSmaccObjectType>::value,
                 "Only are accepted smacc types as subscribers for smacc signals");
@@ -307,7 +309,7 @@ boost::signals2::connection ISmaccStateMachine::createSignalConnection(TSmaccSig
   }
   else if (std::is_base_of<ISmaccState, TSmaccObjectType>::value ||
            std::is_base_of<StateReactor, TSmaccObjectType>::value ||
-           std::is_base_of<SmaccClientBehavior, TSmaccObjectType>::value)
+           std::is_base_of<ISmaccClientBehavior, TSmaccObjectType>::value)
   {
     ROS_INFO("[StateMachine] life-time constrained smacc signal subscription created. Subscriber is %s",
              demangledTypeName<TSmaccObjectType>().c_str());

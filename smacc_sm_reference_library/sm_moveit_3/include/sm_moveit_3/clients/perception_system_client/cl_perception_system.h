@@ -3,7 +3,7 @@
 #include <move_base_z_client_plugin/components/pose/cp_pose.h>
 #include <move_base_z_client_plugin/move_base_z_client_plugin.h>
 #include <smacc/smacc_client.h>
-#include <moveit_z_client/cl_movegroup.h>
+#include <move_group_interface_client/cl_movegroup.h>
 
 
 #include <gazebo_msgs/LinkStates.h>
@@ -75,10 +75,9 @@ public:
     gazeboStateSubscriber_ =
         nh.subscribe("/gazebo/link_states", 1, &ClPerceptionSystem::simulatedLinkStateCallback, this);
     
-    moveit_z_client::ClMoveGroup* movegroupclient;
+    move_group_interface_client::ClMoveGroup* movegroupclient;
     requiresClient(movegroupclient);
     planningInterface_ = &movegroupclient->planningSceneInterface;
-
   }
 
   void simulatedLinkStateCallback(const gazebo_msgs::LinkStates &linksmsg)
@@ -114,7 +113,6 @@ public:
         //             pos = table_transf[0]
         //             self.planning_scene.addBox(
         //                 "table_" + str(i), 1.2, 1.3, 0.001 + thickness, pos[0],  pos[1],  0.7 -  thickness*0.5)  # 0.68
-
         }
 
         if(cubeCollision_ && ! hasCubeAttached)
@@ -125,7 +123,6 @@ public:
         //             self.planning_scene.addCube(
         //                 "cube_" + str(i), 0.06, pos[0],  pos[1],  pos[2])
         //             #self.cube_collision = False
-
         }
       }
   }

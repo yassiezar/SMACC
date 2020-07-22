@@ -11,8 +11,8 @@ struct StGraspRetreat : smacc::SmaccState<StGraspRetreat, SS>
 
     // TRANSITION TABLE
     typedef mpl::list<
-        Transition<MoveGroupMotionExecutionSucceded<ClMoveGroup, OrArm>, StNavigationPosture>,
-        Transition<MoveGroupMotionExecutionFailed<ClMoveGroup, OrArm>,  StNavigationPosture> /* not retry on failure*/
+        Transition<MoveGroupMotionExecutionSucceded<ClMoveGroup, OrArm>, StNavigationPosture, SUCCESS>,
+        Transition<MoveGroupMotionExecutionFailed<ClMoveGroup, OrArm>,  StGraspRetreat, ABORT> /* not retry on failure*/
         >
         reactions;
 
@@ -24,22 +24,29 @@ struct StGraspRetreat : smacc::SmaccState<StGraspRetreat, SS>
 
     void runtimeConfigure()
     {
-        ClPerceptionSystem *perceptionSystem;
-        this->requiresClient(perceptionSystem);
-        auto currentTable = perceptionSystem->getCurrentTable();
+        /*for the case of abor/retry cartesian retreat --*/
+        ClMoveGroup *moveGroup;
+        this->requiresClient(moveGroup);
+        moveGroup->getComponent<CpConstraintTableWorkspaces>()->disableTableCollisionVolume();
+        ros::Duration(1).sleep();
 
         auto moveCartesianRelative = this->getOrthogonal<OrArm>()
                                          ->getClientBehavior<CbMoveCartesianRelative>();
 
-        moveCartesianRelative->offset_.z = 0.1;
-        if (currentTable == RobotProcessStatus::TABLE0)
-        {
-            moveCartesianRelative->offset_.x = -0.1;
-        }
-        else if (currentTable == RobotProcessStatus::TABLE1)
-        {
-            moveCartesianRelative->offset_.x = 0.1;
-        }
+        moveCartesianRelative->offset_.z = 0.15;
+    }
+
+    void onEntry()
+    {
+        
+    }
+
+    void onExit()
+    {
+        ClMoveGroup *moveGroup;
+        this->requiresClient(moveGroup);
+        
+        moveGroup->getComponent<CpConstraintTableWorkspaces>()->setBigTableCollisionVolume();
     }
 };
 

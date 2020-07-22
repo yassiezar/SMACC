@@ -1,7 +1,4 @@
 <launch>
-    <include file="$(find sm_calendar_week)/launch/sm_calendar_week.launch">
-        <arg name="server_nodes_xterms" value=""/>
-    </include>
     <test pkg="smacc_runtime_test" test-name="smacc_runtime_test_node" type="smacc_runtime_test_node">
         <rosparam file="$(find sm_calendar_week)/test/sm_calendar_week_test.yaml"/>
     </test>

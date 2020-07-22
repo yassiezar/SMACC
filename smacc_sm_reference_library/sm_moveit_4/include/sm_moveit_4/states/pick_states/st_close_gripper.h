@@ -1,48 +1,65 @@
-#pragma once
 
 namespace sm_moveit_4
 {
-namespace pick_states
-{
-// STATE DECLARATION
-struct StCloseGripper : smacc::SmaccState<StCloseGripper, SS>
-{
-   using SmaccState::SmaccState;
-
-   // TRANSITION TABLE
-   typedef mpl::list<
-       Transition<EvActionSucceeded<ClGripper, OrGripper>, StGraspRetreat>>
-       reactions;
-
-   // STATE FUNCTIONS
-   static void staticConfigure()
+   namespace pick_states
    {
-      configure_orthogonal<OrGripper, CbCloseGripper>();
-   }
+      // STATE DECLARATION
+      struct StCloseGripper : smacc::SmaccState<StCloseGripper, SS>
+      {
+         using SmaccState::SmaccState;
 
-   void onExit()
-   {
-      ClMoveGroup *moveGroupClient;
-      this->requiresClient(moveGroupClient);
+         // TRANSITION TABLE
+         typedef mpl::list<
+             Transition<EvActionSucceeded<ClGripper, OrGripper>, StGraspRetreat>>
+             reactions;
 
-      //moveGroupClient->planningSceneInterface.removeCollisionObjects({"cube_0"});
-      ros::Duration(0.5).sleep();
+         // STATE FUNCTIONS
+         static void staticConfigure()
+         {
+            configure_orthogonal<OrGripper, CbCloseGripper>();
+            configure_orthogonal<OrArm, CbAttachObject>();
+         }
 
-      // moveGroupClient->moveGroupClientInterface.attachObject("cube_0");
+         void runtimeConfigure()
+         {
+            ClPerceptionSystem *perceptionSystem;
+            this->requiresClient(perceptionSystem);
 
-      // moveGroupClient->moveGroupClientInterface.attachObject("cube_0");
-      // moveGroupClient->planningSceneInterface.removeCollisionObjects({"cube_0"});
+            auto cubeinfo = perceptionSystem->getTargetCurrentCubeInfo();
 
-      /*
-         std::vector<std::string> touch_links{"l_gripper_finger_link", "r_gripper_finger_link"};
-         moveGroupClient->moveGroupClientInterface.attachObject("cube_0", "gripper_link", touch_links);
-         moveGroupClient->moveGroupClientInterface.setSupportSurfaceName("table_0");
-         */
+            auto cbattach = this->getOrthogonal<OrArm>()->getClientBehavior<CbAttachObject>();
+            cbattach->targetObjectName_ = cubeinfo->pose_->getFrameId();
+         }
 
-      // planning_scene.world.collision_objects.clear();
-      // planning_scene.world.collision_objects.push_back(remove_object);
-      // planning_scene.robot_state.attached_collision_objects.push_back(attached_object);
-   }
-};
-} // namespace pick_states
+         void onEntry()
+         {
+            ros::Duration(1.0).sleep();
+         }
+
+         void onExit()
+         {
+            ClMoveGroup *moveGroupClient;
+            this->requiresClient(moveGroupClient);
+
+
+            //auto cubepos = cubeinfo->pose_->toPoseStampedMsg();
+            // //std::vector<moveit_msgs::CollisionObject> collisionObjects;
+            // moveit_msgs::CollisionObject cubeCollision;
+            // auto time = ros::Time::now();
+
+            // createCollisionBox(cubepos.pose.position.x, cubepos.pose.position.y, cubepos.pose.position.z, 0.06, 0.06, 0.06, "collisioncube", "map",  cubeCollision, time, moveit_msgs::CollisionObject::ADD);
+            // planningSceneInterface.applyCollisionObject(cubeCollision);
+
+            // // collisionObjects.push_back(cubeCollision);
+            
+            // std::vector<std::string> touch_links{"l_gripper_finger_link", "r_gripper_finger_link"};
+            // moveGroupClient->moveGroupClientInterface.attachObject("collisioncube", "gripper_link", touch_links);
+            // //moveGroupClient->moveGroupClientInterface.setSupportSurfaceName("table_1");
+            
+            moveGroupClient->getComponent<CpConstraintTableWorkspaces>()->disableTableCollisionVolume();
+
+            ros::Duration(1.0).sleep();
+         }
+      };
+   } // namespace pick_states
 } // namespace sm_moveit_4

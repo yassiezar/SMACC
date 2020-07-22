@@ -17,7 +17,7 @@ public:
 
     inline ISmaccStateMachine *getStateMachine();
 
-    void addClientBehavior(std::shared_ptr<smacc::SmaccClientBehavior> clientBehavior);
+    void addClientBehavior(std::shared_ptr<smacc::ISmaccClientBehavior> clientBehavior);
 
     void runtimeConfigure();
 
@@ -35,7 +35,7 @@ public:
 
     inline const std::vector<std::shared_ptr<smacc::ISmaccClient>> &getClients();
 
-    inline const std::vector<std::shared_ptr<smacc::SmaccClientBehavior>> &getClientBehaviors() const;
+    inline const std::vector<std::shared_ptr<smacc::ISmaccClientBehavior>> &getClientBehaviors() const;
 
     template <typename T>
     void setGlobalSMData(std::string name, T value);
@@ -46,18 +46,19 @@ public:
     template <typename TClientBehavior>
     TClientBehavior *getClientBehavior();
 
-
 protected:
     virtual void onInitialize();
 
-    void assignClientToOrthogonal(smacc::ISmaccClient* client);
+    template <typename TOrthogonal, typename TClient>
+    void assignClientToOrthogonal(TClient* client);
 
     std::vector<std::shared_ptr<smacc::ISmaccClient>> clients_;
 
 private:
     ISmaccStateMachine *stateMachine_;
 
-    std::vector<std::shared_ptr<smacc::SmaccClientBehavior>> clientBehaviors_;
+    std::vector<std::shared_ptr<smacc::ISmaccClientBehavior>> clientBehaviors_;
+    friend class ISmaccStateMachine;
 };
 
 } // namespace smacc
