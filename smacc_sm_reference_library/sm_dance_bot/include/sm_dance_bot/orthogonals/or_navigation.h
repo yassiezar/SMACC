@@ -25,14 +25,14 @@ public:
         movebaseClient->createComponent<cl_move_base_z::Pose>();
 
         // create odom tracker
-        movebaseClient->createComponent<OdomTracker>();
+        movebaseClient->createComponent<cl_move_base_z::odom_tracker::OdomTracker>();
 
         // create waypoints navigator component
         auto waypointsNavigator = movebaseClient->createComponent<WaypointNavigator>();
         loadWaypointsFromYaml(waypointsNavigator);
 
         // change this to skip some points of the yaml file, default = 0
-        waypointsNavigator->currentWaypoint_ = 0;
+        waypointsNavigator->currentWaypoint_ = 1;
     }
 
     void loadWaypointsFromYaml(WaypointNavigator *waypointsNavigator)

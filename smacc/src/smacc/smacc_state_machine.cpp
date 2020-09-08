@@ -117,7 +117,7 @@ void ISmaccStateMachine::onInitialized()
     timer_ = nh_.createTimer(ros::Duration(0.5), &ISmaccStateMachine::state_machine_visualization, this);
 }
 
-void ISmaccStateMachine::onInitializing(std::string shortname)
+void ISmaccStateMachine::initializeROS(std::string shortname)
 {
     ROS_WARN_STREAM("State machine base creation:" << shortname);
     // STATE MACHINE TOPICS
@@ -127,8 +127,6 @@ void ISmaccStateMachine::onInitializing(std::string shortname)
 
     // STATE MACHINE SERVICES
     transitionHistoryService_ = nh_.advertiseService(shortname + "/smacc/transition_log_history", &ISmaccStateMachine::getTransitionLogHistory, this);
-
-    this->onInitialize();
 }
 
 bool ISmaccStateMachine::getTransitionLogHistory(smacc_msgs::SmaccGetTransitionHistory::Request &req, smacc_msgs::SmaccGetTransitionHistory::Response &res)
@@ -185,7 +183,7 @@ void ISmaccStateMachine::checkStateMachineConsistence()
     //         bool found = false;
     //         for (auto &orthogonal : orthogonals_)
     //         {
-    //             if (orthogonal.first == evinfo->getObjectTagName())
+    //             if (orthogonal.first == evinfo->getOrthogonalName())
     //             {
     //                 found = true;
     //                 break;
@@ -198,13 +196,13 @@ void ISmaccStateMachine::checkStateMachineConsistence()
     //                         << "[Consistency Checking] Transition event refers not existing orthogonal." << std::endl
     //                         << "State: " << demangleType(*stinfo->tid_) << std::endl
     //                         << "Transition: " << transition.transitionTypeInfo->getFullName() << std::endl
-    //                         << "Orthogonal: " << evinfo->getObjectTagName() << std::endl
+    //                         << "Orthogonal: " << evinfo->getOrthogonalName() << std::endl
     //                         << "---------" << std::endl;
 
     //             errorFound = true;
     //         }
     //         //std::string getEventSourceName();
-    //         //std::string getObjectTagName();
+    //         //std::string getOrthogonalName();
     //     }
     // }
 

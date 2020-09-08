@@ -38,10 +38,7 @@ public:
 
   WaypointNavigator();
 
-  virtual void initialize(smacc::ISmaccClient *owner) override
-  {
-    client_ = dynamic_cast<ClMoveBaseZ *>(owner);
-  }
+  virtual void onInitialize() override;
 
   void insertWaypoint(int index, geometry_msgs::Pose &newpose);
 
@@ -59,10 +56,10 @@ public:
 
   long getCurrentWaypointIndex() const;
 
-  template <typename TObjectTag, typename TDerived>
-  void configureEventSourceTypes()
+  template <typename TOrthogonal, typename TSourceObject>
+  void onOrthogonalAllocation()
   {
-    waypointsEventDispatcher.initialize<TDerived, TObjectTag>(client_);
+    waypointsEventDispatcher.initialize<TSourceObject, TOrthogonal>(client_);
   }
 
   int currentWaypoint_;

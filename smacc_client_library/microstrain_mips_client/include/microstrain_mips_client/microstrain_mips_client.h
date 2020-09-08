@@ -1,6 +1,7 @@
 
 #pragma once
-#include <smacc/smacc_client.h>
+#include <smacc/smacc.h>
+#include <smacc/client_base_components/cp_topic_subscriber.h>
 #include <boost/optional/optional_io.hpp>
 
 #include <microstrain_mips/SetGyroBiasModel.h>
@@ -33,8 +34,6 @@
 
 #include <sensor_msgs/Imu.h>
 #include <microstrain_mips/status_msg.h>
-
-#include <smacc/client_base_components/cp_topic_subscriber.h>
 
 namespace cl_microstrain_mips
 {
@@ -135,12 +134,12 @@ public:
         }
     }
 
-    template <typename TObjectTag, typename TDerived>
-    void configureEventSourceTypes()
+    template <typename TOrthogonal, typename TSourceObject>
+    void onOrthogonalAllocation()
     {
-        this->imuSubscriber = this->createComponent<decltype(this), TObjectTag, smacc::components::CpTopicSubscriber<sensor_msgs::Imu>>("imu/data");
-        this->imuFilteredSubscriber = this->createComponent<decltype(this), TObjectTag, smacc::components::CpTopicSubscriber<sensor_msgs::Imu>>("filtered/imu/data");
-        this->statusSubscriber = this->createComponent<decltype(this), TObjectTag, smacc::components::CpTopicSubscriber<microstrain_mips::status_msg>>("imu/data");
+        this->imuSubscriber = this->createComponent<TSourceObject, TOrthogonal, smacc::components::CpTopicSubscriber<sensor_msgs::Imu>>("imu/data");
+        this->imuFilteredSubscriber = this->createComponent<TSourceObject, TOrthogonal, smacc::components::CpTopicSubscriber<sensor_msgs::Imu>>("filtered/imu/data");
+        this->statusSubscriber = this->createComponent<TSourceObject, TOrthogonal, smacc::components::CpTopicSubscriber<microstrain_mips::status_msg>>("imu/data");
     }
 
     void resetFilter()

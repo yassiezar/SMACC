@@ -13,12 +13,9 @@ class ISmaccState
 public:
   virtual ISmaccStateMachine &getStateMachine() = 0;
 
-  inline ISmaccState *getParentState() { return parentState_; };
+  inline ISmaccState *getParentState() { return parentState_; }
 
-  inline ros::NodeHandle &getROSNode()
-  {
-    return nh;
-  }
+  inline ros::NodeHandle &getROSNode() { return nh; }
 
   virtual std::string getClassName();
 
@@ -84,9 +81,5 @@ protected:
   ISmaccState *parentState_;
 
   const smacc::introspection::SmaccStateInfo *stateInfo_;
-
-  void requestLockStateMachine(std::string msg);
-
-  void requestUnlockStateMachine(std::string msg);
 };
 } // namespace smacc

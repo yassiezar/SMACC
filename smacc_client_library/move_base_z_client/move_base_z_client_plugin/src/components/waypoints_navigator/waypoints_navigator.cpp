@@ -17,6 +17,11 @@ WaypointNavigator::WaypointNavigator()
 {
 }
 
+void WaypointNavigator::onInitialize()
+{
+  client_ = dynamic_cast<ClMoveBaseZ *>(owner_);
+}
+
 void WaypointNavigator::onGoalReached(ClMoveBaseZ::ResultConstPtr &res)
 {
   waypointsEventDispatcher.postWaypointEvent(currentWaypoint_);
@@ -54,6 +59,10 @@ void WaypointNavigator::sendNextGoal()
 
     this->succeddedConnection_ = client_->onSucceeded(&WaypointNavigator::onGoalReached, this);
     client_->sendGoal(goal);
+  }
+  else
+  {
+    ROS_WARN("[WaypointsNavigator] All waypoints were consumed. There is no more waypoints available.");
   }
 }
 

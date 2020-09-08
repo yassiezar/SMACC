@@ -10,12 +10,13 @@ namespace smacc
 {
 namespace utils
 {
+    
 std::string cleanShortTypeName(const std::type_info &tinfo)
 {
     auto typeinfo= TypeInfo::getFromStdTypeInfo(tinfo);
     auto nontemplatedfullclasname = typeinfo->getNonTemplatedTypeName();
 
-    
+
     //ROS_INFO("State full classname: %s", fullclassname.c_str());
 
     std::vector<std::string> strs;

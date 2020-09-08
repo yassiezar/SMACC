@@ -10,7 +10,7 @@ namespace smacc
     this->onInitialize();
   }
 
-  void ISmaccOrthogonal::addClientBehavior(std::shared_ptr<smacc::SmaccClientBehavior> clBehavior)
+  void ISmaccOrthogonal::addClientBehavior(std::shared_ptr<smacc::ISmaccClientBehavior> clBehavior)
   {
     if (clBehavior != nullptr)
     {
@@ -46,12 +46,6 @@ namespace smacc
     }
   }
 
-  void ISmaccOrthogonal::assignClientToOrthogonal(smacc::ISmaccClient *client)
-  {
-    client->setStateMachine(getStateMachine());
-    client->setOrthogonal(this);
-  }
-
   void ISmaccOrthogonal::onEntry()
   {
     if (clientBehaviors_.size() > 0)
@@ -62,7 +56,7 @@ namespace smacc
 
         try
         {
-          clBehavior->onEntry();
+          clBehavior->executeOnEntry();
         }
         catch (const std::exception &e)
         {
@@ -86,13 +80,19 @@ namespace smacc
         ROS_INFO("[Orthogonal %s] OnExit, current Behavior: %s", this->getName().c_str(), clBehavior->getName().c_str());
         try
         {
-          clBehavior->onExit();
+          clBehavior->executeOnExit();
         }
         catch (const std::exception &e)
         {
           ROS_ERROR("[ClientBehavior %s] Exception onExit - continuing with next client behavior. Exception info: %s", clBehavior->getName().c_str(), e.what());
         }
       }
+
+      for (auto &clBehavior : clientBehaviors_)
+      {
+        clBehavior->dispose();
+      }
+
       clientBehaviors_.clear();
     }
     else

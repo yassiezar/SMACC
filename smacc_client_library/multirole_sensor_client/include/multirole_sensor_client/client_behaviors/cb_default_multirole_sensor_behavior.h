@@ -26,14 +26,14 @@ public:
 
   std::function<void()> deferedEventPropagation;
 
-  template <typename TObjectTag, typename TDerived>
-  void configureEventSourceTypes()
+  template <typename TOrthogonal, typename TSourceObject>
+  void onOrthogonalAllocation()
   {
     deferedEventPropagation = [=]() {
       // just propagate the client events from this client behavior source.
-      sensor_->onMessageReceived(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent<EvTopicMessage<TDerived, TObjectTag>>, this);
-      sensor_->onFirstMessageReceived(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent<EvTopicInitialMessage<TDerived, TObjectTag>>, this);
-      sensor_->onMessageTimeout(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent2<EvTopicMessageTimeout<TDerived, TObjectTag>>, this);
+      sensor_->onMessageReceived(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent<EvTopicMessage<TSourceObject, TOrthogonal>>, this);
+      sensor_->onFirstMessageReceived(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent<EvTopicInitialMessage<TSourceObject, TOrthogonal>>, this);
+      sensor_->onMessageTimeout(&CbDefaultMultiRoleSensorBehavior<ClientType>::propagateEvent2<EvTopicMessageTimeout<TSourceObject, TOrthogonal>>, this);
     };
   }
 
@@ -51,7 +51,7 @@ public:
 
   virtual void onEntry() override
   {
-    ROS_INFO("CbDefaultMultiRoleSensorBehavior onEntry. Requires client of type '%s'", demangleSymbol<ClientType>().c_str());
+    ROS_INFO("[CbDefaultMultiRoleSensorBehavior] onEntry. Requires client of type '%s'", demangleSymbol<ClientType>().c_str());
 
     this->requiresClient(sensor_);
 
@@ -62,7 +62,7 @@ public:
     else
     {
       deferedEventPropagation();
-      ROS_INFO("CbDefaultMultiRoleSensorBehavior onEntry. sensor initialize");
+      ROS_INFO("[CbDefaultMultiRoleSensorBehavior] onEntry. sensor initialize");
       sensor_->initialize();
     }
   }

@@ -28,6 +28,20 @@ namespace smacc
 
 using namespace smacc::introspection;
 
+enum class EventLifeTime{
+    ABSOLUTE,
+    CURRENT_STATE /*events are discarded if we are leaving the state it were created. I is used for client behaviors whose liftime is associated to state*/
+};
+
+enum class StateMachineInternalAction
+{
+    STATE_CONFIGURING,
+    STATE_ENTERING,
+    STATE_STEADY,
+    STATE_EXITING,
+    TRANSITIONING
+};
+
 // This class describes the concept of Smacc State Machine in an abastract way.
 // The SmaccStateMachineBase inherits from this state machine and from
 // statechart::StateMachine<> (via multiple inheritance)
@@ -53,10 +67,10 @@ public:
     void requiresComponent(SmaccComponentType *&storage);
 
     template <typename EventType>
-    void postEvent(EventType *ev);
+    void postEvent(EventType *ev, EventLifeTime evlifetime = EventLifeTime::ABSOLUTE);
 
     template <typename EventType>
-    void postEvent();
+    void postEvent(EventLifeTime evlifetime = EventLifeTime::ABSOLUTE);
 
     void getTransitionLogHistory();
 
@@ -68,8 +82,6 @@ public:
 
     template <typename StateField, typename BehaviorType>
     void mapBehavior();
-
-    void updateStatusMessage();
 
     std::string getStateMachineName();
 
@@ -100,7 +112,13 @@ public:
     void notifyOnRuntimeConfigured(StateType *state);
 
     template <typename StateType>
-    void notifyOnStateExit(StateType *state);
+    void notifyOnStateExitting(StateType *state);
+
+    template <typename StateType>
+    void notifyOnStateExited(StateType *state);
+
+    template <typename StateType>
+    void notifyOnRuntimeConfigurationFinished(StateType *state);
 
     inline unsigned long getCurrentStateCounter() const;
 
@@ -114,7 +132,7 @@ public:
 protected:
     void checkStateMachineConsistence();
 
-    void onInitializing(std::string smshortname);
+    void initializeROS(std::string smshortname);
 
     void onInitialized();
 
@@ -156,6 +174,9 @@ protected:
 
 private:
     std::recursive_mutex m_mutex_;
+    std::recursive_mutex eventQueueMutex_;
+
+    StateMachineInternalAction stateMachineCurrentAction;
 
     std::list<boost::signals2::connection> stateCallbackConnections;
 
@@ -171,9 +192,6 @@ private:
 
     unsigned long stateSeqCounter_;
 
-    friend class ISmaccState;
-    friend class SignalDetector;
-
     void lockStateMachine(std::string msg);
 
     void unlockStateMachine(std::string msg);
@@ -182,6 +200,11 @@ private:
     void propagateEventToStateReactors(ISmaccState *st, EventType *ev);
 
     std::shared_ptr<SmaccStateMachineInfo> stateMachineInfo_;
+
+    void updateStatusMessage();
+
+    friend class ISmaccState;
+    friend class SignalDetector;
 };
 } // namespace smacc
 

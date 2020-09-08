@@ -41,11 +41,19 @@ public:
         return referenceFrame_;
     }
 
+    inline const std::string &getFrameId() const
+    {
+        return poseFrameName_;
+    }
+
     bool isInitialized;
 
 private:
     geometry_msgs::PoseStamped pose_;
-    tf::TransformListener tfListener_;
+    
+    static std::shared_ptr<tf::TransformListener> tfListener_;
+    static std::mutex listenerMutex_;
+
     std::string poseFrameName_;
     std::string referenceFrame_;
 

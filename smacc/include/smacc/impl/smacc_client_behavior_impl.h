@@ -12,7 +12,7 @@ namespace smacc
 {
 
 template <typename EventType>
-void SmaccClientBehavior::postEvent(const EventType &ev)
+void ISmaccClientBehavior::postEvent(const EventType &ev)
 {
     if (stateMachine_ == nullptr)
     {
@@ -20,12 +20,12 @@ void SmaccClientBehavior::postEvent(const EventType &ev)
     }
     else
     {
-        stateMachine_->postEvent(ev);
+        stateMachine_->postEvent(ev, EventLifeTime::CURRENT_STATE);
     }
 }
 
 template <typename EventType>
-void SmaccClientBehavior::postEvent()
+void ISmaccClientBehavior::postEvent()
 {
     if (stateMachine_ == nullptr)
     {
@@ -33,30 +33,31 @@ void SmaccClientBehavior::postEvent()
     }
     else
     {
-        stateMachine_->template postEvent<EventType>();
+         
+        stateMachine_->template postEvent<EventType>(EventLifeTime::CURRENT_STATE);
     }
 }
 
 //inline
-ISmaccStateMachine *SmaccClientBehavior::getStateMachine()
+ISmaccStateMachine *ISmaccClientBehavior::getStateMachine()
 {
     return this->stateMachine_;
 }
 
 //inline
-ISmaccState *SmaccClientBehavior::getCurrentState()
+ISmaccState *ISmaccClientBehavior::getCurrentState()
 {
     return this->currentState;
 }
 
 template <typename SmaccClientType>
-void SmaccClientBehavior::requiresClient(SmaccClientType *&storage)
+void ISmaccClientBehavior::requiresClient(SmaccClientType *&storage)
 {
     currentOrthogonal->requiresClient(storage);
 }
 
 template <typename SmaccComponentType>
-void SmaccClientBehavior::requiresComponent(SmaccComponentType *&storage)
+void ISmaccClientBehavior::requiresComponent(SmaccComponentType *&storage)
 {
     if (stateMachine_ == nullptr)
     {
@@ -68,7 +69,7 @@ void SmaccClientBehavior::requiresComponent(SmaccComponentType *&storage)
     }
 }
 
-template <typename TObjectTag, typename TDerived>
-void SmaccClientBehavior::configureEventSourceTypes() {}
+template <typename TOrthogonal, typename TSourceObject>
+void ISmaccClientBehavior::onOrthogonalAllocation() {}
 
 } // namespace smacc

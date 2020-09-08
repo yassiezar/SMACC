@@ -7,7 +7,7 @@
 #pragma once
 
 #include <smacc/introspection/introspection.h>
-
+#include <smacc/introspection/state_traits.h>
 namespace smacc
 {
 
@@ -29,8 +29,10 @@ private:
   {
     static boost::statechart::result react_without_action(State &stt)
     {
-      ROS_DEBUG("Smacc Transition: REACT WITHOUT ACTION");
+      ROS_DEBUG("[Smacc Transition] REACT WITHOUT ACTION");
       typedef smacc::Transition<Event, Destination, Tag, TransitionContext, pTransitionAction> Transtype;
+      TRANSITION_TAG mock;
+      specificNamedOnExit(stt, mock);
 
       stt.template notifyTransition<Transtype>();
       return stt.template transit<Destination>();
@@ -38,8 +40,10 @@ private:
 
     static boost::statechart::result react_with_action(State &stt, const Event &evt)
     {
-      ROS_DEBUG("Smacc Transition: REACT WITH ACTION AND EVENT");
+      ROS_DEBUG("[Smacc Transition] REACT WITH ACTION AND EVENT");
       typedef smacc::Transition<Event, Destination, Tag, TransitionContext, pTransitionAction> Transtype;
+      TRANSITION_TAG mock;
+      specificNamedOnExit(stt, mock);
       stt.template notifyTransition<Transtype>();
       return stt.template transit<Destination>(pTransitionAction, evt);
     }
@@ -60,5 +64,5 @@ public:
     return dispatcher::react(stt, evt, eventType);
   }
 };
-
 } // namespace smacc
+
