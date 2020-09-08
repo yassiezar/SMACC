@@ -1,8 +1,4 @@
 <launch>
-    <include file="$(find sm_three_some)/launch/sm_three_some.launch">
-        <arg name="server_nodes_xterms" value=""/>
-    </include>
-
     <test pkg="smacc_runtime_test" test-name="smacc_runtime_test_node" type="smacc_runtime_test_node" time-limit="1000.0">
         <rosparam file="$(find sm_three_some)/test/sm_three_some.yaml"/>
     </test>

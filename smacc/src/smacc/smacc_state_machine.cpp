@@ -167,6 +167,7 @@ std::string ISmaccStateMachine::getStateMachineName()
 
 void ISmaccStateMachine::checkStateMachineConsistence()
 {
+<<<<<<< HEAD
     // transition from an orthogonal that doesn’t exist.
     // transition from a source that doesn’t exist.
 
@@ -213,6 +214,8 @@ void ISmaccStateMachine::checkStateMachineConsistence()
     //                                                              << "=================");
     // }
     // cb from a client that doesn’t exist – don’t worry about making clients dynamically.
+=======
+>>>>>>> 89691544ebf74980f24ed6db4ca00c7229fe7d1c
 }
 
 } // namespace smacc
