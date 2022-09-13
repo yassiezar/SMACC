@@ -1,0 +1,8 @@
+<launch>
+    
+    <rosparam command="load" file="$(find sm_atomic_sync)/config/sm_atomic_sync_config.yaml" />
+    <node pkg="sm_atomic_sync" type="sm_atomic_sync_node" name="sm_atomic_sync"/>
+        <node pkg="smacc_runtime_test" name="smacc_runtime_test_node" type="smacc_runtime_test_node" output="screen">
+        <rosparam file="$(find sm_atomic_sync)/config/sm_atomic_sync_test.yaml"/>
+    </node>
+</launch>
