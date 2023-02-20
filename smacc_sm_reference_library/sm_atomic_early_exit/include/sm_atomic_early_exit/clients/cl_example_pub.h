@@ -8,5 +8,10 @@ class ClExamplePub : public smacc::client_bases::SmaccPublisherClient {
   ClExamplePub(const std::string& topic) {
     this->configure<std_msgs::Empty>(topic);
   }
+
+  int getNum() const { return num_; }
+
+ private:
+  const int num_{69};
 };
 }  // namespace sm_atomic_early_exit

@@ -15,7 +15,7 @@ struct State2 : smacc::SmaccState<State2, SmAtomicEarlyExit> {
   static void staticConfigure() {
     configure_orthogonal<OrTimer, CbTimerCountdownOnce>(
         5);  // EvTimer triggers once at 10 client ticks
-    configure_orthogonal<OrExample, CbExamplePub>(0.02);
+    configure_orthogonal<OrExample, CbExamplePub>(0.1);
     configure_orthogonal<OrExample, CbExampleSub>();
   }
 

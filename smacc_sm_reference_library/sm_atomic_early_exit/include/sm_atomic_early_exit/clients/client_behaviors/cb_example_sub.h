@@ -5,11 +5,19 @@
 namespace sm_atomic_early_exit {
 class CbExampleSub : public smacc::CbSubscriptionCallbackBase<std_msgs::Empty> {
  public:
+  void onEntry() override {
+    this->requiresClient(cl_pub_);
+    this->requiresClient(cl_sub_);
+    cl_sub_->onMessageReceived(&CbExampleSub::onMessageReceived, this);
+  }
+
   void onMessageReceived(const std_msgs::Empty& msg) override {
-    ROS_WARN_STREAM("Triggering crash..." << std::to_string(cl_sub_->getNum()));
+    auto tmp = cl_pub_->getNum();
+    tmp = cl_sub_->getNum();
   }
 
  private:
   ClExampleSub* cl_sub_;
+  ClExamplePub* cl_pub_;
 };
 }  // namespace sm_atomic_early_exit
