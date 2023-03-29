@@ -88,11 +88,10 @@ namespace smacc
                 }
             }
 
-            int i = 0;
             for (auto &clBehavior : clientBehaviors_)
             {
+                this->getStateMachine()->disconnectSmaccSignalObject((void*)clBehavior.get());
                 clBehavior->dispose();
-                clientBehaviors_[i] = nullptr;
             }
 
             clientBehaviors_.clear();
