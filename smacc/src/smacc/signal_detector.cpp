@@ -15,7 +15,10 @@ namespace smacc
  * SignalDetector()
  ******************************************************************************************************************
  */
-SignalDetector::SignalDetector(SmaccFifoScheduler *scheduler) : end_(false), initialized_(false)
+SignalDetector::SignalDetector(SmaccFifoScheduler *scheduler, ExecutionModel executionModel)
+  : end_(false),
+    initialized_(false),
+    executionModel_(executionModel)
 {
   scheduler_ = scheduler;
   loop_rate_hz = 20.0;
@@ -29,7 +32,7 @@ SignalDetector::SignalDetector(SmaccFifoScheduler *scheduler) : end_(false), ini
 void SignalDetector::initialize(ISmaccStateMachine *stateMachine)
 {
   smaccStateMachine_ = stateMachine;
-  lastState_ = std::numeric_limits<unsigned long>::quiet_NaN();
+  lastState_ = std::numeric_limits<uint64_t>::quiet_NaN();
   findUpdatableClients();
   initialized_ = true;
 }
@@ -196,7 +199,8 @@ void SignalDetector::pollOnce()
     // STATE UPDATABLE ELEMENTS
     if (this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::TRANSITIONING &&
         this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_CONFIGURING &&
-        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_EXITING)
+        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_EXITING &&
+        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_ENTERING)
     {
       // we do not update updatable elements during trasitioning or configuration of states
       long currentStateIndex = smaccStateMachine_->getCurrentStateCounter();
@@ -270,13 +274,26 @@ void SignalDetector::pollingLoop()
 
   ROS_INFO_STREAM("[SignalDetector] loop rate hz:" << loop_rate_hz);
 
-  ros::Rate r(loop_rate_hz);
-  while (ros::ok() && !end_)
+  if (this->executionModel_ == ExecutionModel::SINGLE_THREAD_SPINNER)
   {
-    ROS_INFO_STREAM_THROTTLE(10, "[SignalDetector] heartbeat");
-    pollOnce();
-    ros::spinOnce();
-    r.sleep();
+    ROS_INFO_STREAM("[SignalDetector] running in single threaded mode");
+
+    ros::Rate r(loop_rate_hz);
+    while (ros::ok() && !end_)
+    {
+      ROS_INFO_STREAM_THROTTLE(10, "[SignalDetector] heartbeat");
+      pollOnce();
+      ros::spinOnce();
+      r.sleep();
+    }
   }
+  else
+  {
+    ROS_INFO_STREAM("[SignalDetector] running in multi threaded mode");
+    ros::AsyncSpinner spinner(1);
+    spinner.start();
+    ros::waitForShutdown();
+  }
+
 }
 }  // namespace smacc

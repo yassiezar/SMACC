@@ -31,7 +31,7 @@ using namespace smacc::introspection;
 
 enum class EventLifeTime{
     ABSOLUTE,
-    CURRENT_STATE /*events are discarded if we are leaving the state it were created. I is used for client behaviors whose liftime is associated to state*/
+    CURRENT_STATE /*events are discarded if we are leaving the state it were created. I is used for client behaviors whose lifetime is associated to state*/
 };
 
 enum class StateMachineInternalAction
@@ -121,7 +121,7 @@ public:
     template <typename StateType>
     void notifyOnRuntimeConfigurationFinished(StateType *state);
 
-    inline unsigned long getCurrentStateCounter() const;
+    inline uint64_t getCurrentStateCounter() const;
 
     inline ISmaccState *getCurrentState() const;
 
@@ -196,7 +196,7 @@ private:
     // Event to notify to the signaldetection thread that a request has been created...
     SignalDetector *signalDetector_;
 
-    unsigned long stateSeqCounter_;
+    uint64_t stateSeqCounter_;
 
     void lockStateMachine(std::string msg);
 
