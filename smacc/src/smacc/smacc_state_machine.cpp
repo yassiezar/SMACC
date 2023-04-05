@@ -42,7 +42,7 @@ ISmaccStateMachine::ISmaccStateMachine(SignalDetector *signalDetector)
 }
 
 void ISmaccStateMachine::disconnectSmaccSignalObject(void *object_ptr)
-{   
+{
     ROS_INFO("[SmaccSignals] object signal disconnecting %ld", (long)object_ptr);
     if(stateCallbackConnections.count(object_ptr) > 0)
     {

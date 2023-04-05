@@ -8,6 +8,7 @@
 
 #include <smacc/smacc_state_machine.h>
 
+#include <smacc/callback_counter_semaphore.h>
 #include <smacc/smacc_client.h>
 #include <smacc/smacc_orthogonal.h>
 #include <smacc/smacc_state.h>
@@ -303,16 +304,16 @@ namespace smacc
       boost::signals2::connection bindaux(TSmaccSignal &signal, TMemberFunctionPrototype callback, TSmaccObjectType *object, std::shared_ptr<CallbackCounterSemaphore> callbackCounter)
       {
         return signal.connect(
-          
-        [=]() 
-        { 
+
+        [=]()
+        {
           if(callbackCounter == nullptr)
           {
-            return (object->*callback)(); 
+            return (object->*callback)();
           }
           else if (callbackCounter->acquire())
           {
-            (object->*callback)(); 
+            (object->*callback)();
             callbackCounter->release();
         }});
       }
@@ -324,17 +325,17 @@ namespace smacc
       template <typename TSmaccSignal, typename TMemberFunctionPrototype, typename TSmaccObjectType>
       boost::signals2::connection bindaux(TSmaccSignal &signal, TMemberFunctionPrototype callback, TSmaccObjectType *object, std::shared_ptr<CallbackCounterSemaphore> callbackCounter)
       {
-        return signal.connect([=](auto a1) 
+        return signal.connect([=](auto a1)
         {
             if(callbackCounter == nullptr)
           {
-            return (object->*callback)(a1); 
+            return (object->*callback)(a1);
           }
           else if (callbackCounter->acquire())
           {
-            (object->*callback)(a1); 
+            (object->*callback)(a1);
             callbackCounter->release();
-                    
+
           }
             });
       }
@@ -346,16 +347,16 @@ namespace smacc
       template <typename TSmaccSignal, typename TMemberFunctionPrototype, typename TSmaccObjectType>
       boost::signals2::connection bindaux(TSmaccSignal &signal, TMemberFunctionPrototype callback, TSmaccObjectType *object, std::shared_ptr<CallbackCounterSemaphore> callbackCounter)
       {
-        return signal.connect([=](auto a1, auto a2) { 
+        return signal.connect([=](auto a1, auto a2) {
            if(callbackCounter == nullptr)
           {
-            return (object->*callback)(a1,a2); 
+            return (object->*callback)(a1,a2);
           }
           else if (callbackCounter->acquire())
           {
-            (object->*callback)(a1,a2); 
+            (object->*callback)(a1,a2);
             callbackCounter->release();
-          
+
           }
           });
       }
@@ -370,13 +371,13 @@ namespace smacc
         return signal.connect([=](auto a1, auto a2, auto a3) {
            if(callbackCounter == nullptr)
           {
-            return (object->*callback)(a1,a2,a3); 
+            return (object->*callback)(a1,a2,a3);
           }
           else if (callbackCounter->acquire())
           {
-            (object->*callback)(a1,a2,a3); 
+            (object->*callback)(a1,a2,a3);
             callbackCounter->release();
-         
+
           }
           });
 
@@ -432,7 +433,7 @@ namespace smacc
 
       connection = binder.bindaux(signal, callback, object, callbackCounterSemaphore);
       callbackCounterSemaphore->addConnection(connection);
-      
+
     }
     else // state life-time objects
     {
@@ -583,7 +584,6 @@ namespace smacc
       try
       {
         sr->onExit();
-        this->disconnectSmaccSignalObject((void*)sr.get());
       }
       catch (const std::exception &e)
       {
@@ -599,7 +599,6 @@ namespace smacc
       try
       {
         eg->onExit();
-        this->disconnectSmaccSignalObject((void*)eg.get());
       }
       catch (const std::exception &e)
       {
@@ -607,16 +606,63 @@ namespace smacc
                   egname, e.what());
       }
     }
-
-    this->lockStateMachine("state exit");
-
-    currentState_ = nullptr;
   }
 
   template <typename StateType>
   void ISmaccStateMachine::notifyOnStateExited(StateType *state)
   {
+    this->lockStateMachine("state exit");
+
     auto fullname = demangleSymbol(typeid(StateType).name());
+    ROS_WARN_STREAM("exiting state: " << fullname);
+
+    ROS_INFO_STREAM("Notification State Disposing: leaving state" << state);
+    for (auto pair : this->orthogonals_)
+    {
+      auto &orthogonal = pair.second;
+      try
+      {
+        orthogonal->onDispose();
+      }
+      catch (const std::exception &e)
+      {
+        ROS_ERROR("[Orthogonal %s] Exception onDispose - continuing with next orthogonal. Exception info: %s",
+                  pair.second->getName().c_str(), e.what());
+      }
+    }
+
+    for (auto &sr : state->getStateReactors())
+    {
+      auto srname = smacc::demangleSymbol(typeid(*sr).name()).c_str();
+      ROS_INFO("state reactor disposing: %s", srname);
+      try
+      {
+        this->disconnectSmaccSignalObject(sr.get());
+      }
+      catch (const std::exception &e)
+      {
+        ROS_ERROR("[State Reactor %s] Exception on OnDispose - continuing with next state reactor. Exception info: %s",
+                  srname, e.what());
+      }
+    }
+
+    for (auto &eg : state->getEventGenerators())
+    {
+      auto egname = smacc::demangleSymbol(typeid(*eg).name()).c_str();
+      ROS_INFO("state reactor disposing: %s", egname);
+      try
+      {
+        this->disconnectSmaccSignalObject(eg.get());
+      }
+      catch (const std::exception &e)
+      {
+        ROS_ERROR("[State Reactor %s] Exception on OnDispose - continuing with next state reactor. Exception info: %s",
+                  egname, e.what());
+      }
+    }
+
+    this->stateCallbackConnections.clear();
+    currentState_ = nullptr;
 
     // then call exit state
     ROS_WARN_STREAM("state exit: " << fullname);

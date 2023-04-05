@@ -87,18 +87,21 @@ namespace smacc
                     ROS_ERROR("[ClientBehavior %s] Exception onExit - continuing with next client behavior. Exception info: %s", clBehavior->getName().c_str(), e.what());
                 }
             }
-
-            for (auto &clBehavior : clientBehaviors_)
-            {
-                this->getStateMachine()->disconnectSmaccSignalObject((void*)clBehavior.get());
-                clBehavior->dispose();
-            }
-
-            clientBehaviors_.clear();
         }
         else
         {
             ROS_INFO("[Orthogonal %s] OnExit", this->getName().c_str());
         }
+    }
+
+    void ISmaccOrthogonal::onDispose()
+    {
+        for (auto &clBehavior : clientBehaviors_)
+        {
+            clBehavior->dispose();
+            this->getStateMachine()->disconnectSmaccSignalObject((void*)clBehavior.get());
+        }
+
+        clientBehaviors_.clear();
     }
 } // namespace smacc
